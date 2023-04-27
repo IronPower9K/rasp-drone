@@ -7,21 +7,21 @@ import time
 import numpy as np
 
 
-# 센서의 I2C통신 포트 지정
+# �꽱�꽌�쓽 I2C�넻�떊 �룷�듃 吏��젙
 
 
 
-# 모터 핀번호 선언 변속기 장착후 변경될 예정
+# 紐⑦꽣 ���踰덊샇 �꽑�뼵 蹂��냽湲� �옣李⑺썑 蹂�寃쎈맆 �삁�젙
 
 
 
 
-class param:              # 여기에 현재 가속도 정보 저장 및 모터의 출력 계산 후 저장 (폐루프에서의 피드백에 해당)
+class param:              # �뿬湲곗뿉 �쁽�옱 媛��냽�룄 �젙蹂� ����옣 諛� 紐⑦꽣�쓽 異쒕젰 怨꾩궛 �썑 ����옣 (�룓猷⑦봽�뿉�꽌�쓽 �뵾�뱶諛깆뿉 �빐�떦)
     pos0 = np.zeros((3,1)) #
     pos1 = np.zeros((3,1)) #stable pos
     pos2 = np.zeros((3,1)) #
     
-    #정지 비행시 안정화 되는 모터 출력
+    #�젙吏� 鍮꾪뻾�떆 �븞�젙�솕 �릺�뒗 紐⑦꽣 異쒕젰
     posmotRFA = 100
     posmotLFA = 100
     posmotLBA = 100
@@ -33,30 +33,30 @@ class param:              # 여기에 현재 가속도 정보 저장 및 모터�
 
 
 """
-<모터의 위치>
+<紐⑦꽣�쓽 �쐞移�>
 LFA           RFA
 
 
 LBA           RBA
 
-예: RFA + 오른쪽 앞 모터 출력 상승, 각 가속도값이 0일 경우 완전한 수평 유지 상태
+�삁: RFA + �삤瑜몄そ �븵 紐⑦꽣 異쒕젰 �긽�듅, 媛� 媛��냽�룄媛믪씠 0�씪 寃쎌슦 �셿�쟾�븳 �닔�룊 �쑀吏� �긽�깭
 
-왼 X-(가속도값)  LFA + LBA + RFA - RBA -
-오 X+(가속도값)  RFA + RBA + LFA - LBA -
-앞 Y-(가속도값)  RFA + LFA + RBA - RFA -
-뒤 Y+(가속도값)  RBA + LBA + RFA - LFA -
-
-
+�쇊 X-(媛��냽�룄媛�)  LFA + LBA + RFA - RBA -
+�삤 X+(媛��냽�룄媛�)  RFA + RBA + LFA - LBA -
+�븵 Y-(媛��냽�룄媛�)  RFA + LFA + RBA - RFA -
+�뮘 Y+(媛��냽�룄媛�)  RBA + LBA + RFA - LFA -
 
 
-ipos 값 [0] = x좌표 [1] = y좌표  [2] = z좌표 ([2]값은 사용하지 않음)
-지면으로부터의 높이 ==> 가속도계의 yaw 값 참고 (아직 구현 x)
+
+
+ipos 媛� [0] = x醫뚰몴 [1] = y醫뚰몴  [2] = z醫뚰몴 ([2]媛믪�� �궗�슜�븯吏� �븡�쓬)
+吏�硫댁쑝濡쒕���꽣�쓽 �넂�씠 ==> 媛��냽�룄怨꾩쓽 yaw 媛� 李멸퀬 (�븘吏� 援ы쁽 x)
 
 """
-## 정지 비행시 외력이 발생되면 스스로 자세 제어를 하는 함수
+## �젙吏� 鍮꾪뻾�떆 �쇅�젰�씠 諛쒖깮�릺硫� �뒪�뒪濡� �옄�꽭 �젣�뼱瑜� �븯�뒗 �븿�닔
 
 def iRFA(iposx,iposy,iposz,imotorRFA):
-    if iposx > +1.5:      ## 가속도계의 x값이 안정된 상태일때보다 1.5(틀어진 정도) 더 틀어진 경우 빠르게 자세교정
+    if iposx > +1.5:      ## 媛��냽�룄怨꾩쓽 x媛믪씠 �븞�젙�맂 �긽�깭�씪�븣蹂대떎 1.5(����뼱吏� �젙�룄) �뜑 ����뼱吏� 寃쎌슦 鍮좊Ⅴ寃� �옄�꽭援먯젙
         imotorRFA += 10
         
         
@@ -64,7 +64,7 @@ def iRFA(iposx,iposy,iposz,imotorRFA):
         imotorRFA += 10
         
             
-    elif iposx <= 1.5 and iposx > 0 :      ## 이전 코드보다 더 자세히 모터 출력 조정을 위해 조금씩만 조정
+    elif iposx <= 1.5 and iposx > 0 :      ## �씠�쟾 肄붾뱶蹂대떎 �뜑 �옄�꽭�엳 紐⑦꽣 異쒕젰 議곗젙�쓣 �쐞�빐 議곌툑�뵫留� 議곗젙
         if iposx <= 0.8:
             imotorRFA += 1
         else:
@@ -269,11 +269,11 @@ def iLBA(iposx,iposy,iposz,imotorLBA):
        
 
 
-# 드론 구동
+# �뱶濡� 援щ룞
 def startmotor(val):
     
     if val == "s":
-        #드론 구동후 정지비행 향후 여기에 특정 신호 입력시 여러방향으로 움직이게끔 추가 예정
+        #�뱶濡� 援щ룞�썑 �젙吏�鍮꾪뻾 �뼢�썑 �뿬湲곗뿉 �듅�젙 �떊�샇 �엯�젰�떆 �뿬�윭諛⑺뼢�쑝濡� ���吏곸씠寃뚮걫 異붽�� �삁�젙
         try:
             while True:
                 
@@ -287,7 +287,7 @@ def startmotor(val):
                 param.pos2[1] = 1.5
                 param.pos2[2] = 0
                
-                # 초기 비행시 안정적으로 정지비행이 안되고 있을시 구동되는 코드 (정지비행 자세제어 모듈)
+                # 珥덇린 鍮꾪뻾�떆 �븞�젙�쟻�쑝濡� �젙吏�鍮꾪뻾�씠 �븞�릺怨� �엳�쓣�떆 援щ룞�릺�뒗 肄붾뱶 (�젙吏�鍮꾪뻾 �옄�꽭�젣�뼱 紐⑤뱢)
                 if abs(param.pos2[0]) >= abs(0)+0.3 or abs(param.pos2[1]) >= abs(0)+0.3 or param.pos2[2] >= abs(0):
 
                     while abs(param.pos2[0]) >= abs(0)+0.1 or abs(param.pos2[1]) >= abs(0)+0.1 or abs(param.pos2[2]) >= abs(0)+0.1:
@@ -303,7 +303,7 @@ def startmotor(val):
                         
                         
                         
-                        # 각 모터별 함수에서 반환된 모터 출력을 이용하여 실제로 그 출력을 모터로 신호보냄
+                        # 媛� 紐⑦꽣蹂� �븿�닔�뿉�꽌 諛섑솚�맂 紐⑦꽣 異쒕젰�쓣 �씠�슜�븯�뿬 �떎�젣濡� 洹� 異쒕젰�쓣 紐⑦꽣濡� �떊�샇蹂대깂
                         """pi.set_PWM_dutycycle(RFA, iRFA(param.pos2[0],param.pos2[1],param.pos2[2]))
                         pi.set_PWM_dutycycle(RFB, 0)
                         pi.set_PWM_dutycycle(LFA, iLFA(param.pos2[0],param.pos2[1],param.pos2[2]))
@@ -322,7 +322,7 @@ def startmotor(val):
                         time.sleep(1)
                         '''idle(param.pos2[0],param.pos2[1],param.pos2[2])'''
                 
-                # 정지비행 안정화 시 해당 출력으로 상공에서 정지
+                # �젙吏�鍮꾪뻾 �븞�젙�솕 �떆 �빐�떦 異쒕젰�쑝濡� �긽怨듭뿉�꽌 �젙吏�
                 else:
                     
                     
@@ -340,7 +340,7 @@ def startmotor(val):
 
 
 
-        # 긴급 정지 (키보드에 입력이 있을 시)
+        # 湲닿툒 �젙吏� (�궎蹂대뱶�뿉 �엯�젰�씠 �엳�쓣 �떆)
 
         except KeyboardInterrupt:
            exit()
@@ -350,7 +350,7 @@ def startmotor(val):
    
    
 val=input("Start Drone?")
-startmotor(val)   ## 자율주행 모듈로 부터 시작 신호를 받으면 시작
+startmotor(val)   ## �옄�쑉二쇳뻾 紐⑤뱢濡� 遺��꽣 �떆�옉 �떊�샇瑜� 諛쏆쑝硫� �떆�옉
  
  
   

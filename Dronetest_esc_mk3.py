@@ -8,7 +8,7 @@ import numpy as np
 import smbus
 from imusensor.MPU9250 import MPU9250
 
-# 센서의 I2C통신 포트 지정
+# ?��?��?�� I2C?��?�� ?��?�� �??��
 address = 0x68
 bus = smbus.SMBus(1)
 imu = MPU9250.MPU9250(bus, address)
@@ -16,7 +16,7 @@ imu.begin()
 
 pi = pigpio.pi()
 
-# 모터 핀번호 선언 변속기 장착후 변경될 예정
+# 모터 ???번호 ?��?�� �??���? ?��착후 �?경될 ?��?��
 RBA = 13  
 RBB = 19
 RFA = 20  
@@ -37,12 +37,12 @@ pi.set_mode(LBB, pigpio.OUTPUT)
 
 
 
-class param:              # 여기에 현재 가속도 정보 저장 및 모터의 출력 계산 후 저장 (폐루프에서의 피드백에 해당)
+class param:              # ?��기에 ?��?�� �??��?�� ?���? ????�� �? 모터?�� 출력 계산 ?�� ????�� (?��루프?��?��?�� ?��?��백에 ?��?��)
     pos0 = np.zeros((3,1)) #
     pos1 = np.zeros((3,1)) #stable pos
     pos2 = np.zeros((3,1)) #
     
-    #정지 비행시 안정화 되는 모터 출력
+    #?���? 비행?�� ?��?��?�� ?��?�� 모터 출력
     posmotRFA = 100
     posmotLFA = 100
     posmotLBA = 100
@@ -53,37 +53,37 @@ class param:              # 여기에 현재 가속도 정보 저장 및 모터�
     
 
 
-imu.readSensor()   ## 가속도계 센서 값 읽어오기
+imu.readSensor()   ## �??��?���? ?��?�� �? ?��?��?���?
 imu.computeOrientation()
 
 print ("Accel x: {0} ; Accel y : {1} ; Accel z : {2}".format(imu.AccelVals[0], imu.AccelVals[1], imu.AccelVals[2]))   
 
 
 """
-<모터의 위치>
+<모터?�� ?���?>
 LFA           RFA
 
 
 LBA           RBA
 
-예: RFA + 오른쪽 앞 모터 출력 상승, 각 가속도값이 0일 경우 완전한 수평 유지 상태
+?��: RFA + ?��른쪽 ?�� 모터 출력 ?��?��, �? �??��?��값이 0?�� 경우 ?��?��?�� ?��?�� ?���? ?��?��
 
-왼 X-(가속도값)  LFA + LBA + RFA - RBA -
-오 X+(가속도값)  RFA + RBA + LFA - LBA -
-앞 Y-(가속도값)  RFA + LFA + RBA - RFA -
-뒤 Y+(가속도값)  RBA + LBA + RFA - LFA -
-
-
+?�� X-(�??��?���?)  LFA + LBA + RFA - RBA -
+?�� X+(�??��?���?)  RFA + RBA + LFA - LBA -
+?�� Y-(�??��?���?)  RFA + LFA + RBA - RFA -
+?�� Y+(�??��?���?)  RBA + LBA + RFA - LFA -
 
 
-ipos 값 [0] = x좌표 [1] = y좌표  [2] = z좌표 ([2]값은 사용하지 않음)
-지면으로부터의 높이 ==> 가속도계의 yaw 값 참고 (아직 구현 x)
+
+
+ipos �? [0] = x좌표 [1] = y좌표  [2] = z좌표 ([2]값�?? ?��?��?���? ?��?��)
+�?면으로�???��?�� ?��?�� ==> �??��?��계의 yaw �? 참고 (?���? 구현 x)
 
 """
-## 정지 비행시 외력이 발생되면 스스로 자세 제어를 하는 함수
+## ?���? 비행?�� ?��?��?�� 발생?���? ?��?���? ?��?�� ?��?���? ?��?�� ?��?��
 
 def iRFA(iposx,iposy,iposz,imotorRFA):
-    if iposx > +1.5:      ## 가속도계의 x값이 안정된 상태일때보다 1.5(틀어진 정도) 더 틀어진 경우 빠르게 자세교정
+    if iposx > +1.5:      ## �??��?��계의 x값이 ?��?��?�� ?��?��?��?��보다 1.5(????���? ?��?��) ?�� ????���? 경우 빠르�? ?��?��교정
         imotorRFA += 10
         
         
@@ -91,7 +91,7 @@ def iRFA(iposx,iposy,iposz,imotorRFA):
         imotorRFA += 10
         
             
-    elif iposx <= 1.5 and iposx > 0 :      ## 이전 코드보다 더 자세히 모터 출력 조정을 위해 조금씩만 조정
+    elif iposx <= 1.5 and iposx > 0 :      ## ?��?�� 코드보다 ?�� ?��?��?�� 모터 출력 조정?�� ?��?�� 조금?���? 조정
         if iposx <= 0.8:
             imotorRFA += 1
         else:
@@ -295,11 +295,11 @@ def iLBA(iposx,iposy,iposz,imotorLBA):
        
 
 
-# 드론 구동
+# ?���? 구동
 def startmotor(val):
     
     if val == "start":
-        #드론 구동후 정지비행 향후 여기에 특정 신호 입력시 여러방향으로 움직이게끔 추가 예정
+        #?���? 구동?�� ?���?비행 ?��?�� ?��기에 ?��?�� ?��?�� ?��?��?�� ?��?��방향?���? ???직이게끔 추�?? ?��?��
         try:
             while True:
                 imu.readSensor()
@@ -317,7 +317,7 @@ def startmotor(val):
                 print("pos2: ",param.pos2)
                 print ("Accel x: {0} ; Accel y : {1} ; Accel z : {2}".format(imu.AccelVals[0], imu.AccelVals[1], imu.AccelVals[2]))
                 
-                # 초기 비행시 안정적으로 정지비행이 안되고 있을시 구동되는 코드 (정지비행 자세제어 모듈)
+                # 초기 비행?�� ?��?��?��?���? ?���?비행?�� ?��?���? ?��?��?�� 구동?��?�� 코드 (?���?비행 ?��?��?��?�� 모듈)
                 if abs(param.pos2[0]) >= abs(0)+0.3 or abs(param.pos2[1]) >= abs(0)+0.3 or param.pos2[2] >= abs(0):
 
                     while abs(param.pos2[0]) >= abs(0)+0.1 or abs(param.pos2[1]) >= abs(0)+0.1 or abs(param.pos2[2]) >= abs(0)+0.1:
@@ -337,7 +337,7 @@ def startmotor(val):
                         
                         
                         
-                        # 각 모터별 함수에서 반환된 모터 출력을 이용하여 실제로 그 출력을 모터로 신호보냄
+                        # �? 모터�? ?��?��?��?�� 반환?�� 모터 출력?�� ?��?��?��?�� ?��?���? �? 출력?�� 모터�? ?��?��보냄
                         """pi.set_PWM_dutycycle(RFA, iRFA(param.pos2[0],param.pos2[1],param.pos2[2]))
                         pi.set_PWM_dutycycle(RFB, 0)
                         pi.set_PWM_dutycycle(LFA, iLFA(param.pos2[0],param.pos2[1],param.pos2[2]))
@@ -356,7 +356,7 @@ def startmotor(val):
                         time.sleep(1)
                         '''idle(param.pos2[0],param.pos2[1],param.pos2[2])'''
                 
-                # 정지비행 안정화 시 해당 출력으로 상공에서 정지
+                # ?���?비행 ?��?��?�� ?�� ?��?�� 출력?���? ?��공에?�� ?���?
                 else:
                     
                     
@@ -381,8 +381,11 @@ def startmotor(val):
 
 
 
-        # 긴급 정지 (키보드에 입력이 있을 시)
+        # 긴급 ?���? (?��보드?�� ?��?��?�� ?��?�� ?��)
 
+        try 
+        
+        
         except KeyboardInterrupt:
             pi.set_PWM_dutycycle(RFA, 0)
             pi.set_PWM_dutycycle(RFB, 0)
@@ -399,7 +402,7 @@ def startmotor(val):
    
    
 val=input("Start Drone?")
-startmotor(val)   ## 자율주행 모듈로 부터 시작 신호를 받으면 시작
+startmotor(val)   ## ?��?��주행 모듈�? �??�� ?��?�� ?��?���? 받으�? ?��?��
  
  
   
