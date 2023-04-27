@@ -7,6 +7,7 @@ import time
 import numpy as np
 import smbus
 from imusensor.MPU9250 import MPU9250
+form pynput import keyboard
 
 # ?Ñº?Ñú?ùò I2C?Üµ?ã† ?è¨?ä∏ Ïß??†ï
 address = 0x68
@@ -359,7 +360,8 @@ def startmotor(val):
                 # ?†ïÏß?ÎπÑÌñâ ?ïà?†ï?ôî ?ãú ?ï¥?ãπ Ï∂úÎ†•?úºÎ°? ?ÉÅÍ≥µÏóê?Ñú ?†ïÏß?
                 else:
                     
-                    
+                    while True:
+                        
                         pi.set_PWM_dutycycle(RFA, motorRFA)
                         pi.set_PWM_dutycycle(RFB, 0)
                         pi.set_PWM_dutycycle(LFA, motorLFA)
@@ -369,21 +371,24 @@ def startmotor(val):
                         pi.set_PWM_dutycycle(LBA, motorLBA)
                         pi.set_PWM_dutycycle(LBB, 0)
                         time.sleep(0.1)
-                        
-                        
+                            
+                            
 
                         print("stable")
                         print(motorRFA)
                         print(motorLFA)
                         print(motorRBA)
                         print(motorLBA)
-                    
+                        if keyboard.read_key() == "w":
+                            while 
+                        
+                         
 
 
 
         # Í∏¥Í∏â ?†ïÏß? (?Ç§Î≥¥Îìú?óê ?ûÖ?†•?ù¥ ?ûà?ùÑ ?ãú)
 
-        try 
+        
         
         
         except KeyboardInterrupt:
